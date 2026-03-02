@@ -1,0 +1,14 @@
+\section{Related Work}
+\label{sec:related}
+
+\para{Behavioral failures under chain-of-thought prompting.}
+Li et al. identify \emph{toxic CoT} cases where chain-of-thought flips a correct direct answer to an incorrect one, and they trace part of this behavior to reduced question-signal retention in rationale generation \citep{li2024focus}. Their results motivate our paired flip-rate analysis. Unlike prior work emphasizing mitigation, we focus on testing whether the effect appears in our sampled \csqa protocol and whether it aligns with intervention evidence.
+
+\para{Mechanistic studies of reasoning circuits.}
+Several studies report structured internal mechanisms for reasoning. Hou et al. propose MechanisticProbe and recover tree-like reasoning signals from attention patterns \citep{hou2023towards}. Cabannes et al. isolate iteration heads that support iterative computation in chain-of-thought settings \citep{cabannes2024iteration}. These findings motivate our hypothesis that commonsense errors may involve coherence integration failures rather than pure knowledge absence.
+
+\para{Causal intervention and representation-level analyses.}
+Recent work applies intervention tools such as attribution tracing and causal pathway analysis to test whether internal features play causal roles in reasoning outputs \citep{li2024focus}. We build on this intervention mindset but use a lightweight layer-ablation proxy on a small open model to keep the full protocol executable end to end.
+
+\para{Positioning.}
+Our work sits between purely behavioral benchmarking and fine-grained mechanistic tracing. We pair real-model behavior (API evaluation) with internal interventions (open-model proxy) on aligned prompts and matched examples. The central outcome is a calibrated negative result: strong degradation and strong localization are both unsupported in this configuration.

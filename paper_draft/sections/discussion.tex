@@ -1,0 +1,17 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\para{What the results support.}
+The behavioral evidence is stable under paired comparison: \cotprompt does not materially improve or degrade \csqa accuracy in this sampled setting. Flip rates are low in both directions, and the McNemar test indicates no significant difference. This weakens broad claims that CoT is generally toxic for commonsense QA.
+
+\para{What the results do not support.}
+Our intervention proxy does not provide statistically significant localization of a coherence-related layer effect. Because the mechanistic track uses \proxy instead of the API model, the result is best read as a construct-validity bound on this proxy setup, not a definitive mechanistic refutation.
+
+\para{Infrastructure lesson.}
+An earlier run produced apparent extreme CoT degradation caused by a parsing bug, and the effect disappeared after parser correction. This is a direct reminder that evaluation pipelines can create false mechanism narratives if output extraction is not robust.
+
+\para{Limitations and threats to validity.}
+The study uses one benchmark subset (120 \csqa items), one primary API model, one seed, and a small open-model proxy. Coherence judgments show a ceiling effect, limiting subgroup resolution. External validity to other datasets (\eg Winogrande, ARC-Challenge) and other model families remains open. Internal validity is constrained by model mismatch between behavior and mechanism tracks.
+
+\para{Broader implications.}
+Negative or null mechanistic findings are still informative when paired with rigorous behavioral controls. For reliability work, this suggests a staged standard: first establish robust paired behavior, then escalate to finer-grained interventions (head/path/feature) on models where internal access better matches the deployed system.

@@ -1,0 +1,163 @@
+[
+  {
+    "name": "commonsense_qa",
+    "source": "huggingface:commonsense_qa",
+    "task": "commonsense_multiple_choice",
+    "splits": {
+      "train": 9741,
+      "validation": 1221,
+      "test": 1140
+    },
+    "columns": {
+      "train": [
+        "id",
+        "question",
+        "question_concept",
+        "choices",
+        "answerKey"
+      ],
+      "validation": [
+        "id",
+        "question",
+        "question_concept",
+        "choices",
+        "answerKey"
+      ],
+      "test": [
+        "id",
+        "question",
+        "question_concept",
+        "choices",
+        "answerKey"
+      ]
+    },
+    "location": "datasets/commonsense_qa"
+  },
+  {
+    "name": "hellaswag",
+    "source": "huggingface:hellaswag",
+    "task": "commonsense_narrative_completion",
+    "splits": {
+      "train": 39905,
+      "test": 10003,
+      "validation": 10042
+    },
+    "columns": {
+      "train": [
+        "ind",
+        "activity_label",
+        "ctx_a",
+        "ctx_b",
+        "ctx",
+        "endings",
+        "source_id",
+        "split",
+        "split_type",
+        "label"
+      ],
+      "test": [
+        "ind",
+        "activity_label",
+        "ctx_a",
+        "ctx_b",
+        "ctx",
+        "endings",
+        "source_id",
+        "split",
+        "split_type",
+        "label"
+      ],
+      "validation": [
+        "ind",
+        "activity_label",
+        "ctx_a",
+        "ctx_b",
+        "ctx",
+        "endings",
+        "source_id",
+        "split",
+        "split_type",
+        "label"
+      ]
+    },
+    "location": "datasets/hellaswag"
+  },
+  {
+    "name": "winogrande_winogrande_debiased",
+    "source": "huggingface:winogrande/winogrande_debiased",
+    "task": "pronoun_coreference_commonsense",
+    "splits": {
+      "train": 9248,
+      "test": 1767,
+      "validation": 1267
+    },
+    "columns": {
+      "train": [
+        "sentence",
+        "option1",
+        "option2",
+        "answer"
+      ],
+      "test": [
+        "sentence",
+        "option1",
+        "option2",
+        "answer"
+      ],
+      "validation": [
+        "sentence",
+        "option1",
+        "option2",
+        "answer"
+      ]
+    },
+    "location": "datasets/winogrande_winogrande_debiased"
+  },
+  {
+    "name": "allenai_ai2_arc_ARC-Challenge",
+    "source": "huggingface:allenai/ai2_arc/ARC-Challenge",
+    "task": "science_commonsense_qa",
+    "splits": {
+      "train": 1119,
+      "test": 1172,
+      "validation": 299
+    },
+    "columns": {
+      "train": [
+        "id",
+        "question",
+        "choices",
+        "answerKey"
+      ],
+      "test": [
+        "id",
+        "question",
+        "choices",
+        "answerKey"
+      ],
+      "validation": [
+        "id",
+        "question",
+        "choices",
+        "answerKey"
+      ]
+    },
+    "location": "datasets/allenai_ai2_arc_ARC-Challenge"
+  },
+  {
+    "name": "truthful_qa_multiple_choice",
+    "source": "huggingface:truthful_qa/multiple_choice",
+    "task": "truthfulness_and_reasoning",
+    "splits": {
+      "validation": 817
+    },
+    "columns": {
+      "validation": [
+        "question",
+        "mc1_targets",
+        "mc2_targets"
+      ]
+    },
+    "location": "datasets/truthful_qa_multiple_choice"
+  }
+]

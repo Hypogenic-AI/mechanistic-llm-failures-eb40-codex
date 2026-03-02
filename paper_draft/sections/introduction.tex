@@ -1,0 +1,22 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Commonsense failures in language models still appear in tasks that humans solve reliably, and these errors can propagate into real downstream decisions. Our main question is simple: are these failures mostly missing-knowledge errors, or do they reflect internal breakdowns in integrating question goals with plausible actions?
+
+This distinction matters for intervention design. If the issue is knowledge coverage, then more data and retrieval should dominate. If the issue is integration, then debugging should focus on circuits, representations, and causal pathways. Recent work on toxic chain-of-thought behavior suggests that reasoning traces can hurt correctness in some settings \citep{li2024focus}, while other mechanistic studies show that multi-step reasoning can rely on identifiable architectural motifs \citep{hou2023towards,cabannes2024iteration}. Yet most evaluations do not connect paired behavioral flips and intervention-based evidence on matched examples.
+
+We address this gap with a compact paired protocol. We first run the same \csqa items with \direct and \cotprompt prompting on \gptapi, then measure per-item flips and paired significance. We next score goal-action coherence on a subset, and finally run layer-level ablations in \proxy as an intervention proxy for causal localization. \Figref{fig:behavioral_accuracy} previews the main behavioral finding: accuracy is nearly unchanged between prompt conditions.
+
+Quantitatively, \direct reaches 90.0\% and \cotprompt 89.2\% on 120 sampled \csqa validation examples; the paired difference is not significant (McNemar exact $p=1.0$). Discordant flips are rare in both directions. In the intervention proxy, we find no significant target-layer effect over control layers.
+
+We make four contributions:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\topsep}{0pt}
+    \item We propose a reproducible paired behavioral--mechanistic protocol for commonsense failure analysis.
+    \item We conduct controlled \direct vs. \cotprompt comparisons on identical items with paired statistical tests.
+    \item We complement behavior-level evaluation with intervention-based layer ablations on matched success/failure subsets.
+    \item We provide evidence that strong CoT-specific degradation claims are not supported in this sampled setting, and we identify concrete limitations for next-step mechanistic studies.
+\end{itemize}
+
+\para{Paper organization.} \Secref{sec:related} reviews prior work, \secref{sec:method} describes the protocol, \secref{sec:results} reports quantitative findings, and \secref{sec:discussion} discusses implications and limitations.

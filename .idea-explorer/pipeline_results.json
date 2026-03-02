@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "stages": {
+    "resource_finder": {
+      "success": true,
+      "completion_marker": "/workspaces/mechanistic-llm-failures-eb40-codex/.resource_finder_complete",
+      "outputs": {
+        "literature_review": "/workspaces/mechanistic-llm-failures-eb40-codex/literature_review.md",
+        "resources_catalog": "/workspaces/mechanistic-llm-failures-eb40-codex/resources.md",
+        "papers_dir": "/workspaces/mechanistic-llm-failures-eb40-codex/papers",
+        "datasets_dir": "/workspaces/mechanistic-llm-failures-eb40-codex/datasets",
+        "code_dir": "/workspaces/mechanistic-llm-failures-eb40-codex/code"
+      },
+      "log_file": "/workspaces/mechanistic-llm-failures-eb40-codex/logs/resource_finder_codex.log",
+      "transcript_file": "/workspaces/mechanistic-llm-failures-eb40-codex/logs/resource_finder_codex_transcript.jsonl",
+      "elapsed_time": 809.3442332744598
+    },
+    "experiment_runner": {
+      "success": true,
+      "return_code": 0,
+      "elapsed_time": 1721.6600852012634,
+      "log_file": "/workspaces/mechanistic-llm-failures-eb40-codex/logs/execution_codex.log",
+      "transcript_file": "/workspaces/mechanistic-llm-failures-eb40-codex/logs/execution_codex_transcript.jsonl"
+    }
+  },
+  "work_dir": "/workspaces/mechanistic-llm-failures-eb40-codex"
+}

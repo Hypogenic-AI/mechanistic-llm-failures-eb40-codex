@@ -1,0 +1,67 @@
+{
+  "accuracy_by_condition": [
+    {
+      "condition": "cot",
+      "mean": 0.8916666666666667,
+      "std": 0.3121040909463286,
+      "count": 120
+    },
+    {
+      "condition": "direct",
+      "mean": 0.9,
+      "std": 0.30125786715206027,
+      "count": 120
+    }
+  ],
+  "mcnemar": {
+    "b": 3,
+    "c": 2,
+    "n_discordant": 5,
+    "p_value": 1.0
+  },
+  "failure_flip_rate_direct_to_cot": 0.025,
+  "failure_flip_rate_cot_to_direct": 0.016666666666666666,
+  "coherence_summary": [
+    {
+      "condition": "cot",
+      "correct": 0,
+      "mean": 0.875,
+      "count": 8
+    },
+    {
+      "condition": "cot",
+      "correct": 1,
+      "mean": 1.0,
+      "count": 72
+    },
+    {
+      "condition": "direct",
+      "correct": 0,
+      "mean": 1.0,
+      "count": 6
+    },
+    {
+      "condition": "direct",
+      "correct": 1,
+      "mean": 1.0,
+      "count": 74
+    }
+  ],
+  "coherence_mannwhitney": {
+    "u_stat": 222.0,
+    "p_value": 1.0,
+    "n_success": 74,
+    "n_failure": 6
+  },
+  "mechanistic_stats": {
+    "n_examples": 24,
+    "n_layers": 6,
+    "target_layer": 3,
+    "control_layer": 0,
+    "paired_t_stat": 0.18739096540716502,
+    "paired_t_p": 0.8529973943023144,
+    "wilcoxon_stat": 128.0,
+    "wilcoxon_p": 0.5456695556640625,
+    "cohens_d_paired": 0.03825102041050668
+  }
+}

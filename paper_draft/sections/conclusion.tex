@@ -1,0 +1,8 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented a paired behavioral--mechanistic protocol to test whether commonsense failures in LLMs are dominated by goal-action coherence breakdowns. On 120 \csqa validation items, \gptapi showed similar performance under \direct and \cotprompt prompting (90.0\% vs. 89.2\%), low bidirectional flip rates, and no significant paired difference. In a local \proxy layer-ablation proxy, we found no significant target-layer causal effect.
+
+The key takeaway is that strong claims about CoT-induced commonsense degradation are not supported in this sampled setting, and current small-model layer ablations provide weak localization evidence.
+
+Future work should expand the paired protocol to additional benchmarks, replace ceiling-prone automatic coherence judges with validated annotation, and move from layer-level ablation to head-level activation patching or feature-level causal interventions in larger open models.

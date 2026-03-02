@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-03-02T01:33:03.599331",
+  "python": "Python 3.12.8",
+  "torch_version": "2.7.1+cu126",
+  "cuda_available": true,
+  "cuda_device_count": 2,
+  "gpu_names": [
+    "NVIDIA GeForce RTX 3090",
+    "NVIDIA GeForce RTX 3090"
+  ],
+  "config": {
+    "seed": 42,
+    "api_model": "gpt-4.1",
+    "judge_model": "gpt-4.1",
+    "local_model": "distilgpt2",
+    "sample_size": 120,
+    "judge_subset": 80,
+    "max_tokens_direct": 16,
+    "max_tokens_cot": 200,
+    "max_tokens_judge": 120,
+    "temperature": 0.0
+  }
+}

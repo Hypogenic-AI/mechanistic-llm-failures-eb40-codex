@@ -1,0 +1,819 @@
+You are an academic paper writer. Generate a complete NEURIPS style paper
+based on the experiment results provided.
+
+════════════════════════════════════════════════════════════════════════════════
+                         IMPORTANT: BEFORE YOU START
+════════════════════════════════════════════════════════════════════════════════
+
+Before writing any content, you MUST complete these steps:
+
+1. READ THE SKILL: Review the paper-writer skill at .codex/skills/paper-writer/SKILL.md
+2. READ THE STYLE GUIDE: Study templates/paper_writing/lab_style_guide.md carefully
+3. REVIEW EXAMPLES: Browse paper_examples/ for formatting and language patterns:
+   - Look at sections/1.introduction.tex for language style
+   - Look at tables/*.tex for table formatting
+   - Look at commands/*.tex for macro usage
+4. VERIFY COMMAND TEMPLATES: Command templates (math.tex, general.tex, macros.tex) are pre-copied to paper_draft/commands/
+
+CRITICAL: Reference example papers for FORMATTING and LANGUAGE STYLE only.
+Do NOT copy content, phrasing, or narrative structure from the example papers.
+The examples are in a different research domain - focus only on presentation style.
+
+════════════════════════════════════════════════════════════════════════════════
+                            EXPERIMENT REPORT
+════════════════════════════════════════════════════════════════════════════════
+
+# Mechanistic Interpretability of Commonsense Reasoning Failures in LLMs
+
+## 1. Executive Summary
+This study tested whether commonsense failures come from missing knowledge or from breakdowns in goal-action coherence integration.
+
+Using 120 CommonsenseQA validation items, GPT-4.1 achieved similar accuracy with direct prompting (90.0%) and CoT prompting (89.2%), with low bidirectional failure flips (direct→CoT 2.5%, CoT→direct 1.7%; McNemar p=1.0). In a local mechanistic proxy (`distilgpt2`, layer ablation on matched success/failure subsets), we found no statistically significant targeted-layer causal effect (paired t-test p=0.853, Wilcoxon p=0.546).
+
+Practical implication: on this sampled setting, we do not find strong evidence that CoT triggers broad commonsense degradation; mechanistic signal localization remains weak with this small open-model proxy and requires stronger models/tasks.
+
+## 2. Goal
+### Hypothesis
+Commonsense failures are not only missing-knowledge failures; they arise from internal breakdowns in goal-action coherence integration.
+
+### Why Important
+If true, debugging should target internal circuits/representations instead of only adding more data.
+
+### Problem Solved
+Provides an end-to-end paired protocol linking behavioral outcomes (real API model) and internal intervention outcomes (open model).
+
+### Expected Impact
+Helps separate behavioral failure claims from mechanism-level evidence and identifies where current methods are insufficient.
+
+## 3. Data Construction
+### Dataset Description
+- Source: HuggingFace `commonsense_qa` (local disk snapshot in `datasets/commonsense_qa`)
+- Split used: validation
+- Full split size: 1,221
+- Experiment sample: 120 items (seed=42)
+- Task: 5-way multiple-choice commonsense QA
+
+### Example Samples
+| ID | Question (truncated) | Choices | Gold |
+|---|---|---|---|
+| `1afa02df...` | A revolving door is convenient... security measure at a what? | A bank / B library / C department store / D mall / E new york | A |
+| `a7ab0860...` | What do people aim to do at work? | A complete job / B learn from each other / C kill animals / D wear hats / E talk to each other | A |
+
+### Data Quality
+- Missing values: 0% on used fields (`question`, `choices`, `answerKey`)
+- Invalid model predictions (non A-E): 0
+- Outliers: N/A for categorical QA
+- Validation checks: option labels present, exactly 5 options per sample, answer key in A-E
+
+### Preprocessing Steps
+1. Loaded validation split from local arrow format via `datasets.load_from_disk`.
+2. Deterministically shuffled indices with seed=42.
+3. Selected first 120 examples for API evaluation.
+4. Formatted each as fixed multiple-choice prompt with labeled options A-E.
+
+### Train/Val/Test Splits
+No training. Evaluation-only study on validation subset.
+
+## 4. Experiment Description
+### Methodology
+#### High-Level Approach
+1. Evaluate real LLM behavior on identical items under two prompt conditions (direct vs CoT).
+2. Quantify flips and significance with paired tests.
+3. Judge goal-action coherence for sampled predictions.
+4. Run local causal proxy via layer ablations in a small open model on matched success/failure items.
+
+#### Why This Method
+- Real API model avoids simulated-agent artifacts.
+- Paired per-item comparison controls content variance.
+- Causal ablation provides intervention evidence (not only correlation).
+
+Alternatives considered but not used now:
+- Head-level activation patching in larger models (higher complexity/time).
+- Multi-dataset expansion (deferred to follow-up).
+
+### Implementation Details
+#### Tools and Libraries
+- Python: 3.12.8
+- openai: 2.24.0
+- torch: 2.7.1+cu126
+- transformers: 4.51.3
+- datasets: 4.6.1
+- scipy: 1.17.1
+- statsmodels: 0.14.6
+- pandas: 3.0.1
+- matplotlib/seaborn for plots
+
+#### Algorithms/Models
+- Behavioral model: `gpt-4.1` (API)
+- Judge model: `gpt-4.1`
+- Mechanistic proxy model: `distilgpt2` (6 transformer layers)
+
+#### Hyperparameters
+| Parameter | Value | Selection Method |
+|---|---:|---|
+| seed | 42 | fixed default |
+| sample_size | 120 | runtime-quality tradeoff |
+| judge_subset | 80 items (160 condition-rows) | cost/runtime tradeoff |
+| temperature | 0.0 | deterministic evaluation |
+| direct max_tokens | 16 | minimal output length |
+| CoT max_tokens | 200 | allow short rationale |
+| judge max_tokens | 120 | JSON judgment + brief reason |
+
+#### Training / Analysis Pipeline
+1. Build prompt for each item.
+2. Query `gpt-4.1` under direct and CoT conditions.
+3. Parse final answer robustly (CoT requires `FINAL_ANSWER: &lt;A-E&gt;`).
+4. Compute paired correctness and McNemar exact test.
+5. Judge coherence on subset.
+6. Select matched success/failure items from direct condition.
+7. Run per-layer residual ablation at final token in `distilgpt2`.
+8. Compare targeted-layer effect vs control layer.
+
+### Experimental Protocol
+#### Reproducibility Information
+- Runs for averaging: 1 primary + 1 cached validation rerun
+- Seeds: [42]
+- Hardware: 2x NVIDIA RTX 3090 (24GB each)
+- Batch strategy: API-only behavioral calls; local mechanistic pass on GPU
+- Mixed precision: not required (inference-only)
+- Runtime: ~5 min API eval + ~2 min judging + ~1 min mechanistic scan
+
+#### Evaluation Metrics
+- Accuracy: fraction correct by condition.
+- Failure-flip rates: direct-correct/CoT-wrong and reverse.
+- McNemar exact p-value: paired condition significance.
+- Coherence rate: judged 0/1 consistency between likely question goal and chosen option.
+- Delta margin: `(ablated margin - base margin)` where margin = logit(gold) - max(logit(other)).
+
+### Raw Results
+#### Tables
+| Method | Accuracy | 95% CI (Wilson) | N |
+|---|---:|---|---:|
+| Direct | 0.900 | [0.833, 0.942] | 120 |
+| CoT | 0.892 | [0.823, 0.936] | 120 |
+
+| Flip Type | Rate | Count |
+|---|---:|---:|
+| Direct correct → CoT wrong | 0.025 | 3 |
+| CoT correct → Direct wrong | 0.0167 | 2 |
+
+McNemar exact: `b=3`, `c=2`, `n_discordant=5`, `p=1.0`.
+
+| Mechanistic Test | Value |
+|---|---:|
+| n_examples (matched) | 24 |
+| n_layers | 6 |
+| target_layer | 3 |
+| paired t-test p | 0.853 |
+| Wilcoxon p | 0.546 |
+| Cohen&#39;s d (paired) | 0.038 |
+
+#### Visualizations
+- `results/plots/accuracy_direct_vs_cot.png`
+- `results/plots/coherence_rates.png`
+- `results/plots/layer_ablation_deltas.png`
+
+#### Output Locations
+- Results JSON: `results/metrics.json`, `results/summary.json`
+- CSVs: `results/behavioral_results.csv`, `results/coherence_results.csv`, `results/mechanistic_layer_scan.csv`
+- Raw outputs: `results/model_outputs/api_outputs_v2.jsonl`, `results/model_outputs/coherence_judgments_v2.jsonl`
+- Config/environment: `results/config.json`
+
+## 5. Result Analysis
+### Key Findings
+1. Direct and CoT performance were very close (90.0% vs 89.2%); no significant paired difference.
+2. Failure-flip rates were low in both directions (2.5% and 1.7%), contradicting a strong toxic-CoT effect in this sample.
+3. Coherence judge scores saturated near 1.0 in most groups, offering little discriminative signal.
+4. Layer-ablation causal proxy did not show a significant target-vs-control effect.
+
+### Hypothesis Testing Results
+- Behavioral degradation under CoT: **not supported** on this sample.
+- Coherence breakdown signal: **inconclusive** due score saturation.
+- Mechanistic causal localization: **not supported** (no significant effect).
+
+### Comparison to Baselines
+- Direct baseline slightly outperformed CoT by 0.83 points absolute (not significant).
+- No practical advantage for CoT under the tested prompt template.
+
+### Surprises and Insights
+- Initial run showed extreme CoT failure due parsing bug; after parser fix, the effect disappeared.
+- This reinforces that evaluation infrastructure quality (parsing/format constraints) can dominate apparent reasoning conclusions.
+
+### Error Analysis
+Representative direct failures:
+- `22015315e7ff79386877828b4fa27799`: rug near front door, predicted E vs gold D.
+- `896b25dc41f84357add1c798d4a96cd8`: seaweed location, predicted A vs gold C.
+
+Representative direct→CoT flips:
+- `047c2d8c65d297b39aa42821c1ca76a9`: direct B correct, CoT A wrong.
+- `1b3d286458a7e7f069222de0376d06da`: direct C correct, CoT D wrong.
+
+### Limitations
+- Single benchmark subset (CommonsenseQA only in this run).
+- Small mechanistic proxy model (`distilgpt2`) may not reflect GPT-4.1 internals.
+- Layer-level ablation, not head-level/path-level patching.
+- Coherence judge was weakly discriminative (ceiling effect).
+- One seed and one primary API model.
+
+### Threats to Validity
+- Construct validity: judged coherence may not perfectly represent goal-action coherence.
+- External validity: findings may not transfer to other datasets/tasks.
+- Internal validity: model mismatch between API behavior and open-model mechanism limits causal inference strength.
+
+## 6. Conclusions
+On this experiment, commonsense failures did not show strong CoT-specific degradation, and we found no significant mechanistic causal effect in the chosen open-model proxy. The current evidence does not support a strong claim that goal-action coherence breakdown is the dominant failure mode under these settings.
+
+Confidence is moderate for behavioral results (stable paired design, reproducible rerun) and low-to-moderate for mechanism claims (small proxy/model mismatch). Stronger evidence would require larger mechanistic-capable models, head/path interventions, and richer coherence annotations.
+
+## 7. Next Steps
+### Immediate Follow-ups
+1. Expand to `winogrande` and `ARC-Challenge` with the same paired API protocol.
+2. Replace coherence judge with human or rubric-validated annotations on a stratified subset.
+3. Run head-level activation patching (TransformerLens) on a larger open model.
+
+### Alternative Approaches
+- Mediation analysis on internal representations across prompt conditions.
+- Sparse autoencoder feature steering for coherence-related features.
+
+### Broader Extensions
+- Compare architecture families and instruction-tuning variants.
+- Test whether training objectives can reduce flip rates without harming baseline accuracy.
+
+### Open Questions
+- Which intervention granularity (layer/head/feature) is most diagnostic for commonsense integration?
+- Are coherence failures concentrated in specific question archetypes?
+
+## References
+- `literature_review.md`
+- Li et al. (2024), *Focus on Your Question! Interpreting and Mitigating Toxic CoT Problems in Commonsense Reasoning*.
+- Cabannes et al. (2024), *Iteration Head: A Mechanistic Study of Chain-of-Thought*.
+- Hou et al. (2023), *Towards a Mechanistic Interpretation of Multi-Step Reasoning Capabilities of Language Models*.
+
+
+════════════════════════════════════════════════════════════════════════════════
+                            RESEARCH PLAN
+════════════════════════════════════════════════════════════════════════════════
+
+# Research Plan: Mechanistic Interpretability of Commonsense Reasoning Failures in LLMs
+
+## Motivation &amp; Novelty Assessment
+
+### Why This Research Matters
+Commonsense failures in LLMs can cause incorrect real-world recommendations even when relevant facts are present, which limits reliability in assistant and agent settings. If failures are caused by internal integration breakdowns rather than missing facts, interventions should target mechanisms (attention pathways, representations, or training objectives) instead of only scaling data. This work helps model developers prioritize debugging and alignment strategies with mechanistic evidence.
+
+### Gap in Existing Work
+Prior work and the provided literature review show strong behavioral evidence (e.g., toxic CoT/failure flips) and isolated mechanism studies (iteration heads, reasoning probes), but there is limited unified evaluation connecting behavior-level commonsense failures to internal goal-action coherence signals on the same examples. Most studies do not jointly test: (1) direct vs CoT failure behavior, (2) causal intervention effects, and (3) whether API model failures can be mapped to open-model mechanistic signatures under matched prompts.
+
+### Our Novel Contribution
+We introduce a paired behavioral-mechanistic protocol for commonsense QA: identify failure/success pairs on real API models, score goal-action coherence in outputs, and then run activation-level causal analyses in a local transformer on matched prompts to localize layers/heads associated with coherent action selection. This directly tests whether failures align with reduced coherence-sensitive activation pathways, not only missing factual knowledge.
+
+### Experiment Justification
+- Experiment 1: Behavioral failure mapping on real APIs (Direct vs CoT)
+  - Why needed: establishes whether failures persist despite factual availability and whether CoT helps or harms.
+- Experiment 2: Goal-action coherence scoring and failure taxonomy
+  - Why needed: operationalizes the central construct of the hypothesis and distinguishes knowledge errors from coherence integration errors.
+- Experiment 3: Mechanistic contrastive analysis (success vs failure) on open model internals
+  - Why needed: localizes where coherence-related separation emerges or collapses across layers/heads.
+- Experiment 4: Causal intervention (targeted head ablation/patching)
+  - Why needed: tests whether identified components are causally relevant, not just correlational.
+- Experiment 5: Robustness and alternative explanations
+  - Why needed: checks if effects are stable across prompt format, seed, and subset composition to separate architectural vs prompt-induced artifacts.
+
+## Research Question
+Do commonsense reasoning failures in LLMs primarily reflect missing knowledge, or do they stem from internal breakdowns in integrating goal-action coherence signals during inference?
+
+## Background and Motivation
+The project tests a mechanistic hypothesis motivated by the literature synthesis: commonsense failures often occur even when component facts are present, suggesting integration failure. We use pre-downloaded commonsense benchmarks and mechanistic tools in `code/TransformerLens` and `code/baukit` to connect observed errors to internals.
+
+## Hypothesis Decomposition
+- H1 (mechanistic): Failure examples show weaker internal separation between coherent and incoherent action options than success examples.
+- H2 (causal): Intervening on identified coherence-related components significantly changes coherent-option probability.
+- H3 (behavioral): CoT does not uniformly improve commonsense accuracy; in a nontrivial subset it degrades performance (failure flips).
+- H0 (null): Observed failures are fully explained by missing knowledge/noise; no systematic mechanistic coherence signal differences.
+
+Independent variables:
+- Prompt condition: direct vs CoT.
+- Example type: success vs failure pair.
+- Intervention: none vs targeted ablation/patching.
+
+Dependent variables:
+- Accuracy.
+- Failure-flip rate.
+- Goal-action coherence score.
+- Logit margin/probability for coherent option.
+- Intervention delta.
+
+Alternative explanations:
+- Output-format sensitivity rather than reasoning quality.
+- Dataset ambiguity or annotation noise.
+- Open-model mismatch with API model behavior.
+
+## Proposed Methodology
+
+### Approach
+A two-track design:
+1. Real-model behavioral evaluation with API calls (required for LLM behavior validity).
+2. Mechanistic tracing in an open transformer on matched prompts for causal localization.
+
+This combines ecological validity (real API models) with internal access (open model).
+
+### Experimental Steps
+1. Environment verification and dependency setup with `uv` in local `.venv`.
+2. Build a balanced evaluation subset from `commonsense_qa` and `winogrande` validation splits.
+3. Query GPT-family API with direct and CoT prompts, fixed decoding params, and parse MC answers.
+4. Compute accuracy, failure flips, and coherence score (rule-based rubric over action-goal consistency).
+5. Run local mechanistic analysis on selected contrastive items with TransformerLens (per-layer residual/readout + head ablations).
+6. Quantify causal effects: change in coherent-option logit/probability after targeted interventions.
+7. Run robustness checks across 3 random seeds and prompt paraphrases.
+
+### Baselines
+- Direct-answer prompting baseline.
+- CoT prompting baseline.
+- Random-choice baseline (chance level).
+- Untargeted/random head ablation control.
+
+### Evaluation Metrics
+- Accuracy (overall and by dataset).
+- Failure-flip rate: `%` where direct correct but CoT wrong (and reverse).
+- Goal-action coherence score (0/1 rubric per sample).
+- Coherence logit margin: coherent option minus best incoherent option.
+- Intervention effect size (Cohen&#39;s d, paired differences).
+
+### Statistical Analysis Plan
+- Paired comparison direct vs CoT accuracy: McNemar test.
+- Coherence score success vs failure: Mann-Whitney U (nonparametric).
+- Intervention effect on coherent margin: paired t-test or Wilcoxon depending on normality.
+- Significance threshold: alpha = 0.05 with Benjamini-Hochberg correction for multiple component tests.
+- Report 95% CI and effect size (Cohen&#39;s d or rank-biserial).
+
+## Expected Outcomes
+Support for hypothesis if:
+- Nontrivial failure-flip rate appears despite factual clues.
+- Failure examples show significantly lower coherence margins/signals.
+- Targeted interventions produce significant directional changes in coherent-option probability.
+
+Refutation if:
+- Failures are random or fully explained by unknown facts.
+- No consistent internal differences between success/failure.
+- Interventions fail to affect outputs beyond noise.
+
+## Timeline and Milestones
+- Phase 1 (planning/documentation): 25 min.
+- Phase 2 (setup + EDA): 20 min.
+- Phase 3 (pipeline implementation): 70 min.
+- Phase 4 (experiments): 70 min.
+- Phase 5 (analysis/plots/stats): 40 min.
+- Phase 6 (reporting/validation): 30 min.
+- Buffer: ~30% distributed across phases for debugging/API retries.
+
+## Potential Challenges
+- API latency/rate limits: use retry/backoff and output caching.
+- Answer parsing errors: strict format prompts + regex fallback.
+- Mechanistic runtime costs: limit to high-value contrastive subset, use GPU and batched inference.
+- Model mismatch (API vs open model): explicitly treat as construct-validity limitation and compare relative patterns.
+
+## Success Criteria
+- Reproducible pipeline runs end-to-end from local scripts.
+- Statistical evidence for/against each sub-hypothesis with confidence intervals.
+- At least one causal intervention result with significant directional effect or clear null.
+- Complete `REPORT.md` and `README.md` with actual tables/figures and paths to artifacts.
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          LITERATURE REVIEW
+════════════════════════════════════════════════════════════════════════════════
+
+# Literature Review: Mechanistic Interpretability of Commonsense Reasoning Failures in LLMs
+
+## Review Scope
+
+### Research Question
+Where do commonsense reasoning failures in LLMs originate mechanistically: missing knowledge, faulty integration of question-goal information, brittle iterative reasoning circuits, or training-induced shortcuts?
+
+### Inclusion Criteria
+- Mechanistic interpretability studies of transformer reasoning behavior.
+- Papers analyzing CoT or multi-step reasoning internals.
+- Papers with relevance to commonsense QA or reasoning benchmarks.
+- 2023-2026 emphasis, with benchmark/foundational context where needed.
+
+### Exclusion Criteria
+- Pure prompting papers with no mechanistic analysis.
+- Non-language-model interpretability work.
+- Papers unavailable in full text and without sufficient abstract-level detail.
+
+### Time Frame
+- Primary: 2023-2026.
+
+### Sources
+- Paper-finder service (`.claude/skills/paper-finder/scripts/find_papers.py`)
+- Semantic Scholar links returned by paper-finder
+- arXiv fallback downloads
+
+## Search Log
+
+| Date | Query | Source | Results | Notes |
+|------|-------|--------|---------|-------|
+| 2026-03-02 | mechanistic interpretability language models reasoning | paper-finder (fast/json) | 75 ranked papers | Main usable ranked set |
+| 2026-03-02 | commonsense reasoning failures large language models | paper-finder | timed out | Backend hang for this query |
+| 2026-03-02 | goal action coherence planning language models | paper-finder | timed out | Backend hang for this query |
+
+## Screening Results
+
+- Total ranked papers (from successful query): 75
+- Relevance &gt;= 2 (target set): 57
+- Successfully downloaded PDFs: 24
+- Access/link failures: 33 (documented in `papers/download_log.json`)
+
+## Key Papers
+
+### Paper 1: Focus on Your Question! Interpreting and Mitigating Toxic CoT Problems in Commonsense Reasoning
+- **Authors**: Jiachun Li et al.
+- **Year**: 2024
+- **Source**: arXiv/ACL-style publication track
+- **Key Contribution**: Defines and quantifies Toxic CoT (cases where CoT flips correct direct answers to wrong answers) and proposes mitigation.
+- **Methodology**: Attribution tracing + causal tracing over attention pathways; introduces RIDERS (Residual decoding + serial-position swap).
+- **Datasets Used**: WinoGrande, CommonsenseQA, HellaSwag, SIQA, PIQA.
+- **Results**: Reports toxic-rate reduction and overall accuracy gain (table indicates avg ACC gain and substantial toxic-rate drop).
+- **Code Available**: Not clearly resolved from extracted text.
+- **Relevance to Our Research**: Directly supports hypothesis that failures come from integration breakdowns (question signal loss) rather than only missing knowledge.
+
+### Paper 2: Towards a Mechanistic Interpretation of Multi-Step Reasoning Capabilities of Language Models
+- **Authors**: Yifan Hou et al.
+- **Year**: 2023
+- **Source**: EMNLP 2023
+- **Key Contribution**: Proposes MechanisticProbe to recover implicit reasoning-tree structure from attention for procedural reasoning.
+- **Methodology**: Attention-flow probing on GPT-2 (synthetic k-th smallest task) and LLaMA (ProofWriter, ARC).
+- **Datasets Used**: Synthetic procedural data, ProofWriter, AI2 ARC.
+- **Results**: Probe can recover reasoning-tree signals in many examples; indicates true multi-step computation in some cases.
+- **Code Available**: Not confirmed from local extraction.
+- **Relevance to Our Research**: Supports representational/circuit-level explanations over pure knowledge-deficit explanations.
+
+### Paper 3: Iteration Head: A Mechanistic Study of Chain-of-Thought
+- **Authors**: Vivien Cabannes et al.
+- **Year**: 2024
+- **Source**: NeurIPS
+- **Key Contribution**: Identifies “iteration heads” as specialized attention mechanisms enabling iterative computation in CoT-like settings.
+- **Methodology**: Controlled synthetic tasks (copying/parity/polynomial iteration), layer/head dissection, scaling studies.
+- **Datasets Used**: Synthetic algorithmic tasks.
+- **Results**: CoT and multi-layer setups enable longer iterative reasoning; interpretable circuit motif emerges.
+- **Code Available**: Indicated in checklist text (codebase referenced).
+- **Relevance to Our Research**: Strong architectural/circuit evidence for failure modes when iterative circuits are absent or unstable.
+
+### Paper 4: How do Language Models Bind Entities in Context?
+- **Authors**: (from paper-finder metadata)
+- **Year**: 2023
+- **Source**: Mechanistic interpretability literature
+- **Key Contribution**: Entity-binding mechanism analysis.
+- **Methodology**: Internal representation/head behavior analysis.
+- **Datasets Used**: Contextual binding tasks.
+- **Results**: Finds specific mechanisms for contextual entity tracking.
+- **Code Available**: Unknown.
+- **Relevance to Our Research**: Entity-goal binding quality can influence action coherence in commonsense tasks.
+
+### Paper 5: A Mechanistic Analysis of a Transformer Trained on a Symbolic Multi-Step Reasoning Task
+- **Authors**: (from paper-finder metadata)
+- **Year**: 2024
+- **Source**: arXiv
+- **Key Contribution**: Circuit-level study of symbolic multi-step reasoning.
+- **Methodology**: Synthetic symbolic tasks + mechanism tracing.
+- **Datasets Used**: Symbolic synthetic tasks.
+- **Results**: Shows decomposable reasoning subcircuits.
+- **Code Available**: Unknown.
+- **Relevance to Our Research**: Useful for architecture-vs-training disentanglement in controlled settings.
+
+### Paper 6: A Mechanistic Interpretation of Arithmetic Reasoning in Language Models using Causal Mediation Analysis
+- **Authors**: (from paper-finder metadata)
+- **Year**: 2023
+- **Source**: arXiv
+- **Key Contribution**: Uses causal mediation analysis for arithmetic circuits.
+- **Methodology**: Mediator interventions and pathway attribution.
+- **Datasets Used**: Arithmetic tasks.
+- **Results**: Isolates pathways that mediate reasoning outputs.
+- **Code Available**: Unknown.
+- **Relevance to Our Research**: Method transferable to commonsense goal-action mediation.
+
+### Paper 7: Reasoning Circuits in Language Models: A Mechanistic Interpretation of Syllogistic Inference
+- **Authors**: (from paper-finder metadata)
+- **Year**: 2024
+- **Source**: arXiv
+- **Key Contribution**: Circuit analysis of deductive/syllogistic reasoning.
+- **Methodology**: Circuit tracing and targeted interventions.
+- **Datasets Used**: Syllogistic inference tasks.
+- **Results**: Identifies reusable deductive sub-circuits.
+- **Code Available**: Unknown.
+- **Relevance to Our Research**: Bridges deductive mechanisms with commonsense inference failures.
+
+### Paper 8: Understanding Reasoning in Thinking Language Models via Steering Vectors
+- **Authors**: (from paper-finder metadata)
+- **Year**: 2025
+- **Source**: arXiv
+- **Key Contribution**: Uses steering vectors to control/diagnose reasoning behavior.
+- **Methodology**: Representation steering and behavior evaluation.
+- **Datasets Used**: Reasoning benchmarks.
+- **Results**: Demonstrates controllable shifts in reasoning outputs.
+- **Code Available**: Unknown.
+- **Relevance to Our Research**: Practical mechanism to test causal role of goal-action coherence features.
+
+## Deep Reading Notes (Chunked Full-PDF Pass)
+
+Full chunk-by-chunk passes were performed for:
+- `2024_Focus_on_Your_Question_...` (9 chunks)
+- `2023_Towards_a_Mechanistic_Interpretation_of_Multi-Step_...` (6 chunks)
+- `2024_Iteration_Head_...` (8 chunks)
+
+Raw extraction notes: `papers/deep_reading_raw_notes.md`.
+
+Key extracted details:
+- Toxic CoT work presents explicit evidence of early-layer question information loss during rationale generation; mitigation alters sequence positioning and decoding residuals.
+- MechanisticProbe work argues that procedural reasoning signals can be recovered as tree-like structures from attention, suggesting internal algorithmic traces beyond memorization.
+- Iteration Head work shows specific head-level iterative motifs emerging under CoT-compatible training setups and architecture depth.
+
+## Common Methodologies
+
+- **Attention/path tracing and causal interventions**: Used in Toxic CoT and causal-path papers.
+- **Circuit-level head analysis**: Used in Iteration Head, syllogistic/deductive circuit papers.
+- **Synthetic controllable tasks**: Used to separate architecture from data confounds.
+- **Representation steering/mediation**: Emerging method for causal tests of internal features.
+
+## Standard Baselines
+
+- **Direct answer prompting (no CoT)**: Baseline to quantify CoT gains/failures.
+- **CoT + self-consistency variants**: Strong prompting baseline.
+- **Simple model scale baselines (small vs medium)**: To test capacity effects.
+- **Task benchmark baselines**: Existing leaderboard metrics on CSQA/HellaSwag/WinoGrande/ARC.
+
+## Evaluation Metrics
+
+- **Accuracy (ACC)**: Primary outcome on commonsense QA.
+- **Toxic Rate / failure-flip rate**: Fraction of cases where CoT hurts correctness.
+- **Mechanistic probe score / pathway attribution strength**: Internal-mechanism metric.
+- **Intervention delta**: Accuracy or logit shifts after ablation/patching/steering.
+
+## Datasets in the Literature
+
+- **CommonsenseQA, HellaSwag, WinoGrande, SIQA, PIQA**: Main commonsense benchmarks for CoT failure analysis.
+- **AI2 ARC (Challenge/Easy)**: Often used for multi-step reasoning tests.
+- **ProofWriter / synthetic procedural data**: Controlled mechanistic testing.
+
+## Gaps and Opportunities
+
+- Limited direct work on **goal-action coherence circuits** as a named construct.
+- Many studies isolate arithmetic/symbolic reasoning; fewer connect to naturalistic commonsense failures.
+- Training-data leakage vs mechanism still incompletely separated in open-domain settings.
+- Need unified experiments combining: behavior metrics + mechanistic probes + causal interventions on the same examples.
+
+## Recommendations for Our Experiment
+
+- **Recommended datasets**:
+  - Primary: CommonsenseQA, HellaSwag, WinoGrande, ARC-Challenge.
+  - Diagnostic: TruthfulQA (multiple_choice) for confabulation pressure.
+- **Recommended baselines**:
+  - Direct answer, CoT, self-consistency.
+  - Mechanistic intervention variants (head ablation, activation patching, steering vectors).
+- **Recommended metrics**:
+  - Accuracy, failure-flip/Toxic Rate, calibration, intervention delta.
+- **Methodological considerations**:
+  - Pair each failure case with matched success case.
+  - Trace question-token information flow across layers and test causal impact.
+  - Run architecture-controlled studies (small model + synthetic tasks) to separate training vs architecture effects.
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          PAPER REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+Generate a complete academic paper with the following structure:
+
+1. TITLE
+   - Clear, specific, informative
+   - Should convey main finding or contribution
+
+2. AUTHOR
+   - Use this exact author line in the \author{} block: Mido Sang and Idea-Explorer
+
+3. ABSTRACT (150-250 words)
+   - Problem statement
+   - Approach
+   - Key results
+   - Significance
+
+4. INTRODUCTION
+   - Research problem and motivation
+   - Gap in existing work
+   - Our contribution (be specific)
+   - Paper organization
+
+5. RELATED WORK
+   - Organized by theme/approach
+   - Position our work relative to prior work
+   - Cite papers from literature review
+
+6. METHODOLOGY
+   - Clear description of approach
+   - Experimental setup
+   - Datasets used
+   - Evaluation metrics
+   - Baselines
+
+7. RESULTS
+   - Present results with tables and figures
+   - Statistical analysis
+   - Comparison to baselines
+   - Ablation studies (if applicable)
+
+8. DISCUSSION
+   - Interpretation of results
+   - Limitations
+   - Broader implications
+
+9. CONCLUSION
+   - Summary of contributions
+   - Key findings
+   - Future work
+
+10. REFERENCES
+   - BibTeX format
+   - All cited papers
+
+════════════════════════════════════════════════════════════════════════════════
+                          OUTPUT FORMAT
+════════════════════════════════════════════════════════════════════════════════
+
+Create a MODULAR LaTeX project with the following directory structure:
+
+paper_draft/
+├── main.tex              # Main file that imports all sections
+├── references.bib        # BibTeX references
+├── sections/
+│   ├── abstract.tex      # Abstract content
+│   ├── introduction.tex  # Introduction section
+│   ├── related_work.tex  # Related work section
+│   ├── methodology.tex   # Methodology section
+│   ├── results.tex       # Results section
+│   ├── discussion.tex    # Discussion section
+│   └── conclusion.tex    # Conclusion section
+├── figures/              # Directory for any generated figures
+├── tables/               # Directory for complex standalone tables
+└── appendix/             # Directory for appendix sections (if needed)
+
+INSTRUCTIONS:
+1. First, create the directory structure above (mkdir -p paper_draft/sections paper_draft/figures paper_draft/tables paper_draft/appendix)
+2. Write main.tex using the EXACT preamble for NEURIPS:
+
+   \documentclass{article}
+   \usepackage[final]{neurips_2025}  % NEURIPS style (neurips_2025.sty is in paper_draft/)
+   \usepackage[hidelinks]{hyperref}  % REQUIRED: clickable links
+   \usepackage{booktabs}  % REQUIRED: professional tables
+   \usepackage{graphicx}
+   \usepackage{amsmath,amssymb}
+
+   % Import command files
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+   % Use this bibliography style:
+   \bibliographystyle{plainnat}
+
+   \author{Mido Sang and Idea-Explorer}
+
+   - Use \input{sections/...} to include each section
+   - Use \bibliography{references} for references
+3. Write each section file with COMPLETE content (no placeholders)
+4. Each section file should include its \section{} command
+5. Write references.bib with all citations in BibTeX format
+6. After writing all files, compile the paper:
+   cd paper_draft && pdflatex -interaction=nonstopmode main.tex && bibtex main && pdflatex -interaction=nonstopmode main.tex && pdflatex -interaction=nonstopmode main.tex
+
+This modular structure allows humans to easily:
+- Edit individual sections without navigating a large file
+- Track changes per section
+- Reuse sections across different paper versions
+
+════════════════════════════════════════════════════════════════════════════════
+                          QUALITY REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+- Academic tone throughout
+- All claims must be supported by data from the experiment report
+- Proper citations using \cite{} commands
+- Clear figures and tables with proper captions
+- NO placeholder text - every section must have real content
+- The paper MUST compile without errors
+- If compilation fails, debug and fix the LaTeX errors
+
+════════════════════════════════════════════════════════════════════════════════
+                          LAB WRITING STYLE
+════════════════════════════════════════════════════════════════════════════════
+
+Follow these lab-specific conventions to match our paper style:
+
+1. LANGUAGE STYLE:
+   - Use active voice: "We propose", "We examine", "We focus on"
+   - Be direct and confident: "Our main question is...", "We hypothesize that..."
+   - State things clearly and simply - prefer plain language over jargon
+   - Use bold questions as paragraph organizers: {\bf what is X?}
+   - Include specific quantitative claims: "8.97% over baseline"
+   - Avoid fancy wording: "utilize" → "use", "facilitate" → "help"
+
+2. INTRODUCTION STRUCTURE:
+   - Engaging hook (get to the point quickly)
+   - Problem importance
+   - Gap identification
+   - Your approach with method figure reference
+   - Quantitative preview of results
+   - Contribution bullets (3-4 items, action verbs)
+
+3. CONTRIBUTION LISTS:
+   \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+       \item We propose...
+       \item We conduct...
+       \item We complement...
+   \end{itemize}
+
+4. MODULAR COMMANDS STRUCTURE:
+   Command templates are pre-copied to paper_draft/commands/:
+   - math.tex: Math notation macros
+   - general.tex: Formatting macros
+   - macros.tex: Project-specific term definitions (customize this for your paper)
+
+   In main.tex, include:
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+5. REFERENCE CONVENTIONS:
+   Use reference macros from math.tex:
+   - \figref{fig:name} for "figure 1" (lowercase, in-sentence)
+   - \Figref{fig:name} for "Figure 1" (capitalized, start of sentence)
+   - \secref{sec:name} for "section 2"
+
+6. TEXT FORMATTING:
+   - Use \para{Header text} for bold paragraph headers
+   - Define method/dataset names with \textsc and \xspace:
+     \newcommand{\methodname}{\textsc{MethodName}\xspace}
+
+7. TABLE FORMATTING:
+   - Use booktabs package (no vertical lines)
+   - Use \resizebox{\textwidth}{!}{...} for wide tables
+   - Use @{} to remove padding at table edges
+   - Use \cmidrule(lr){x-y} for sub-headers
+   - Use \textsc{} for dataset/method names in headers
+   - Bold best results with {\bf ...}
+
+8. FIGURE FORMATTING:
+   - Use 0.32\textwidth for 3-column subfigures
+   - Use 0.95\linewidth for full-width figures
+   - Use \input{figures/legend} for shared legends
+   - Write self-contained captions explaining key observations
+
+9. RESULTS PRESENTATION:
+   - Define \increase and \decrease for colored arrows (green up, red down)
+   - Bold best results in tables
+   - Report confidence intervals when available
+
+10. ALGORITHM STYLING:
+    - Use algpseudocode with [noend]
+    - Use \triangleright for comments
+
+11. HYPERLINKS (REQUIRED):
+    - Always use \usepackage[hidelinks]{hyperref} or with colored links
+    - All citations, section refs, figure refs, table refs must be clickable
+    - This is essential for reader navigation
+
+════════════════════════════════════════════════════════════════════════════════
+                          WORKFLOW: REVIEW AND REFLECT
+════════════════════════════════════════════════════════════════════════════════
+
+Before calling finish, you MUST complete these review steps:
+
+1. REVIEW RESOURCES (at the start):
+   - Read .codex/skills/paper-writer/SKILL.md for detailed guidance
+   - Study templates/paper_writing/lab_style_guide.md for style conventions
+   - Browse paper_examples/ for formatting and language patterns
+
+2. SELF-REFLECTION (before finishing):
+   After writing all sections, review your work against these criteria:
+
+   LANGUAGE CHECK:
+   - [ ] Is the writing clear and jargon-free?
+   - [ ] Are claims specific with quantitative support?
+   - [ ] Is active voice used throughout?
+
+   FORMATTING CHECK:
+   - [ ] Does main.tex include \input{commands/math}, \input{commands/general}, \input{commands/macros}?
+   - [ ] Is hyperref package included for clickable references?
+   - [ ] Do tables use booktabs (no vertical lines)?
+   - [ ] Are best results bolded in tables?
+   - [ ] Are figures/tables properly captioned?
+
+   STRUCTURE CHECK:
+   - [ ] Does introduction follow: hook → importance → gap → approach → preview → contributions?
+   - [ ] Are contribution bullets specific with action verbs?
+   - [ ] Does the paper compile without errors?
+
+3. FIX ISSUES:
+   - Address any issues found in the self-reflection
+   - Re-compile and verify the PDF looks correct
+
+Only after completing this review should you consider the paper finished.

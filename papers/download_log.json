@@ -1,0 +1,458 @@
+[
+  {
+    "title": "How does GPT-2 compute greater-than?: Interpreting mathematical abilities in a pre-trained language model",
+    "year": 2023,
+    "status": "downloaded",
+    "file": "papers/2023_How_does_GPT-2_compute_greater-than_Interpreting_mathematical_abilities_in_a_pre-trained_language_model.pdf",
+    "source": "https://arxiv.org/pdf/2305.00586v5",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "A Mechanistic Interpretation of Arithmetic Reasoning in Language Models using Causal Mediation Analysis",
+    "year": 2023,
+    "status": "downloaded",
+    "file": "papers/2023_A_Mechanistic_Interpretation_of_Arithmetic_Reasoning_in_Language_Models_using_Causal_Mediation_Analysis.pdf",
+    "source": "https://arxiv.org/pdf/2305.15054v2",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "Towards a Mechanistic Interpretation of Multi-Step Reasoning Capabilities of Language Models",
+    "year": 2023,
+    "status": "downloaded",
+    "file": "papers/2023_Towards_a_Mechanistic_Interpretation_of_Multi-Step_Reasoning_Capabilities_of_Language_Models.pdf",
+    "source": "https://arxiv.org/pdf/2310.14491.pdf",
+    "reason": "ok"
+  },
+  {
+    "title": "Understanding Reasoning in Thinking Language Models via Steering Vectors",
+    "year": 2025,
+    "status": "downloaded",
+    "file": "papers/2025_Understanding_Reasoning_in_Thinking_Language_Models_via_Steering_Vectors.pdf",
+    "source": "https://arxiv.org/pdf/2506.18167.pdf",
+    "reason": "ok"
+  },
+  {
+    "title": "Iteration Head: A Mechanistic Study of Chain-of-Thought",
+    "year": 2024,
+    "status": "downloaded",
+    "file": "papers/2024_Iteration_Head_A_Mechanistic_Study_of_Chain-of-Thought.pdf",
+    "source": "https://arxiv.org/pdf/2406.02128v2",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "Pre-trained Large Language Models Use Fourier Features to Compute Addition",
+    "year": 2024,
+    "status": "downloaded",
+    "file": "papers/2024_Pre-trained_Large_Language_Models_Use_Fourier_Features_to_Compute_Addition.pdf",
+    "source": "https://arxiv.org/pdf/2406.03445.pdf",
+    "reason": "ok"
+  },
+  {
+    "title": "How do Language Models Bind Entities in Context?",
+    "year": 2023,
+    "status": "downloaded",
+    "file": "papers/2023_How_do_Language_Models_Bind_Entities_in_Context.pdf",
+    "source": "https://arxiv.org/pdf/2310.17191v2",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "A Mechanistic Analysis of a Transformer Trained on a Symbolic Multi-Step Reasoning Task",
+    "year": 2024,
+    "status": "downloaded",
+    "file": "papers/2024_A_Mechanistic_Analysis_of_a_Transformer_Trained_on_a_Symbolic_Multi-Step_Reasoning_Task.pdf",
+    "source": "https://arxiv.org/pdf/2402.11917v3",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "Mechanistic Unveiling of Transformer Circuits: Self-Influence as a Key to Model Reasoning",
+    "year": 2025,
+    "status": "downloaded",
+    "file": "papers/2025_Mechanistic_Unveiling_of_Transformer_Circuits_Self-Influence_as_a_Key_to_Model_Reasoning.pdf",
+    "source": "https://arxiv.org/pdf/2502.09022v2",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "Focus on Your Question! Interpreting and Mitigating Toxic CoT Problems in Commonsense Reasoning",
+    "year": 2024,
+    "status": "downloaded",
+    "file": "papers/2024_Focus_on_Your_Question_Interpreting_and_Mitigating_Toxic_CoT_Problems_in_Commonsense_Reasoning.pdf",
+    "source": "https://arxiv.org/pdf/2402.18344v2",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "Towards a Mechanistic Understanding of Propositional Logical Reasoning in Large Language Models",
+    "year": 2026,
+    "status": "downloaded",
+    "file": "papers/2026_Towards_a_Mechanistic_Understanding_of_Propositional_Logical_Reasoning_in_Large_Language_Models.pdf",
+    "source": "https://arxiv.org/pdf/2601.04260v1",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "Causal Interventions on Causal Paths: Mapping GPT-2's Reasoning From Syntax to Semantics",
+    "year": 2024,
+    "status": "downloaded",
+    "file": "papers/2024_Causal_Interventions_on_Causal_Paths_Mapping_GPT-2_s_Reasoning_From_Syntax_to_Semantics.pdf",
+    "source": "https://arxiv.org/pdf/2410.21353v1",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "Interpreting and Controlling LLM Reasoning through Integrated Policy Gradient",
+    "year": 2026,
+    "status": "downloaded",
+    "file": "papers/2026_Interpreting_and_Controlling_LLM_Reasoning_through_Integrated_Policy_Gradient.pdf",
+    "source": "https://arxiv.org/pdf/2602.02313v2",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "Locate-then-edit for Multi-hop Factual Recall under Knowledge Editing",
+    "year": 2024,
+    "status": "downloaded",
+    "file": "papers/2024_Locate-then-edit_for_Multi-hop_Factual_Recall_under_Knowledge_Editing.pdf",
+    "source": "https://arxiv.org/pdf/2410.06331v3",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "From Indirect Object Identification to Syllogisms: Exploring Binary Mechanisms in Transformer Circuits",
+    "year": 2025,
+    "status": "downloaded",
+    "file": "papers/2025_From_Indirect_Object_Identification_to_Syllogisms_Exploring_Binary_Mechanisms_in_Transformer_Circuits.pdf",
+    "source": "https://arxiv.org/pdf/2508.16109v1",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "Toward Mechanistic Explanation of Deductive Reasoning in Language Models",
+    "year": 2025,
+    "status": "downloaded",
+    "file": "papers/2025_Toward_Mechanistic_Explanation_of_Deductive_Reasoning_in_Language_Models.pdf",
+    "source": "https://arxiv.org/pdf/2510.09340v1",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "A Implies B: Circuit Analysis in LLMs for Propositional Logical Reasoning",
+    "year": 2024,
+    "status": "downloaded",
+    "file": "papers/2024_A_Implies_B_Circuit_Analysis_in_LLMs_for_Propositional_Logical_Reasoning.pdf",
+    "source": "https://arxiv.org/pdf/2411.04105v4",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "How Chain-of-Thought Works? Tracing Information Flow from Decoding, Projection, and Activation",
+    "year": 2025,
+    "status": "downloaded",
+    "file": "papers/2025_How_Chain-of-Thought_Works_Tracing_Information_Flow_from_Decoding_Projection_and_Activation.pdf",
+    "source": "https://arxiv.org/pdf/2507.20758v1",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "Detection and Mitigation of Hallucination in Large Reasoning Models: A Mechanistic Perspective",
+    "year": 2025,
+    "status": "downloaded",
+    "file": "papers/2025_Detection_and_Mitigation_of_Hallucination_in_Large_Reasoning_Models_A_Mechanistic_Perspective.pdf",
+    "source": "https://arxiv.org/pdf/2505.12886v1",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "Reasoning Circuits in Language Models: A Mechanistic Interpretation of Syllogistic Inference",
+    "year": 2024,
+    "status": "downloaded",
+    "file": "papers/2024_Reasoning_Circuits_in_Language_Models_A_Mechanistic_Interpretation_of_Syllogistic_Inference.pdf",
+    "source": "https://arxiv.org/pdf/2408.08590v3",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "Implicit Reasoning in Transformers is Reasoning through Shortcuts",
+    "year": 2025,
+    "status": "downloaded",
+    "file": "papers/2025_Implicit_Reasoning_in_Transformers_is_Reasoning_through_Shortcuts.pdf",
+    "source": "https://arxiv.org/pdf/2503.07604v3",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "How does Chain of Thought Think? Mechanistic Interpretability of Chain-of-Thought Reasoning with Sparse Autoencoding",
+    "year": 2025,
+    "status": "downloaded",
+    "file": "papers/2025_How_does_Chain_of_Thought_Think_Mechanistic_Interpretability_of_Chain-of-Thought_Reasoning_with_Sparse_Autoencoding.pdf",
+    "source": "https://arxiv.org/pdf/2507.22928v1",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "Fluid Representations in Reasoning Models",
+    "year": 2026,
+    "status": "downloaded",
+    "file": "papers/2026_Fluid_Representations_in_Reasoning_Models.pdf",
+    "source": "https://arxiv.org/pdf/2602.04843v1",
+    "reason": "arxiv title match 1.00"
+  },
+  {
+    "title": "The Geometry of Thought: How Scale Restructures Reasoning In Large Language Models",
+    "year": 2026,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Unsupervised decoding of encoded reasoning using language model interpretability",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "From Reasoning to Answer: Empirical, Attention-Based and Mechanistic Insights into Distilled DeepSeek R1 Models",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Mapping Faithful Reasoning in Language Models",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Disentangling Recall and Reasoning in Transformer Models through Layer-wise Attention and Activation Analysis",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Failure by Interference: Language Models Make Balanced Parentheses Errors When Faulty Mechanisms Overshadow Sound Ones",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Benchmark Profiling: Mechanistic Diagnosis of LLM Benchmarks",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Stream: Scaling up Mechanistic Interpretability to Long Context in LLMs via Sparse Attention",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "LOLAMEME: Logic, Language, Memory, Mechanistic Framework",
+    "year": 2024,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Reasoning Models Generate Societies of Thought",
+    "year": 2026,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": "api status 429 | no arxiv match (0.00)"
+  },
+  {
+    "title": "Cracking the Circuits: Mechanistic Interpretability in Large Language Models",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Emergence of Minimal Circuits for Indirect Object Identification in Attention-Only Transformers",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Interpretability in the Wild: a Circuit for Indirect Object Identification in GPT-2 small",
+    "year": 2022,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": "api status 429 | no arxiv match (0.00)"
+  },
+  {
+    "title": "Large Language Model Alignment: A Survey",
+    "year": 2023,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "A Practical Review of Mechanistic Interpretability for Transformer-Based Language Models",
+    "year": 2024,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Does Circuit Analysis Interpretability Scale? Evidence from Multiple Choice Capabilities in Chinchilla",
+    "year": 2023,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Not All Language Model Features Are One-Dimensionally Linear",
+    "year": 2024,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "From Understanding to Utilization: A Survey on Explainability for Large Language Models",
+    "year": 2024,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Hypothesis Testing the Circuit Hypothesis in LLMs",
+    "year": 2024,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "MIB: A Mechanistic Interpretability Benchmark",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Mechanistic Interpretability for Large Language Model Alignment: Progress, Challenges, and Future Directions",
+    "year": 2026,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Explainability of Large Language Models: Opportunities and Challenges toward Generating Trustworthy Explanations",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Function Induction and Task Generalization: An Interpretability Study with Off-by-One Addition",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "A Philosophical Introduction to Language Models - Part II: The Way Forward",
+    "year": 2024,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Explainability in Practice: A Survey of Explainable NLP Across Various Domains",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Making Sense of the Unsensible: Reflection, Survey, and Challenges for XAI in Large Language Models Toward Human-Centered AI",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Towards Transparent AI: A Survey on Explainable Large Language Models",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "TinySQL: A Progressive Text-to-SQL Dataset for Mechanistic Interpretability Research",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "eDIF: A European Deep Inference Fabric for Remote Interpretability of LLM",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Mechanistic Interpretability of Socio-Political Frames in Language Models",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Route Sparse Autoencoder to Interpret Large Language Models",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": "api status 429 | no arxiv match (0.00)"
+  },
+  {
+    "title": "Exploring Mechanistic Interpretability in Large Language Models: Challenges, Approaches, and Insights",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": "api status 429 | no arxiv match (0.00)"
+  },
+  {
+    "title": "Geospatial Mechanistic Interpretability of Large Language Models",
+    "year": 2025,
+    "status": "failed",
+    "file": "",
+    "source": "",
+    "reason": " | no arxiv match (0.00)"
+  },
+  {
+    "title": "Mechanistic Interpretability of LoRA-Adapted Language Models for Nuclear Reactor Safety Applications",
+    "year": 2025,
+    "status": "downloaded",
+    "file": "papers/2025_Mechanistic_Interpretability_of_LoRA-Adapted_Language_Models_for_Nuclear_Reactor_Safety_Applications.pdf",
+    "source": "https://arxiv.org/pdf/2507.09931.pdf",
+    "reason": "ok"
+  }
+]

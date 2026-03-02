@@ -1,0 +1,33 @@
+\section{Methodology}
+\label{sec:method}
+
+\para{Hypothesis and design.}
+We test whether commonsense failures primarily reflect breakdowns in goal-action coherence integration. The study has two tracks: (1) paired behavioral evaluation on an API model and (2) intervention-based mechanistic proxy analysis on an open model.
+
+\subsection*{Dataset and sampling}
+We use the \csqa validation split from a local HuggingFace snapshot. The full split has 1,221 items; we deterministically shuffle with seed 42 and evaluate the first 120 items. Each item is formatted as a five-option multiple-choice prompt with labels A--E. Data checks verify complete fields, valid option sets, and valid gold labels.
+
+\subsection*{Behavioral conditions and parsing}
+For each item, we query \gptapi under two conditions at temperature 0.0:
+\begin{itemize}
+    \item \direct: short answer-only format (max tokens 16).
+    \item \cotprompt: rationale-enabled format with explicit final tag \texttt{FINAL\_ANSWER: <A-E>} (max tokens 200).
+\end{itemize}
+We parse final choices robustly and reject non A--E outputs (observed invalid rate: 0\%).
+
+\subsection*{Metrics and statistical tests}
+We report accuracy with Wilson 95\% confidence intervals, directional flip rates (\direct$\rightarrow$\cotprompt and \cotprompt$\rightarrow$\direct), and McNemar exact test on discordant pairs. For coherence, we sample 80 items (160 condition-rows) and use \gptapi as a judge to score whether the selected option is consistent with the likely question goal-action relation.
+
+\subsection*{Mechanistic proxy intervention}
+We run a local \mechanisticproxy in \proxy (6 transformer layers). We construct matched success/failure examples from the \direct condition, compute base final-token logit margins,
+\begin{equation}
+\Delta_{\text{margin}} = \text{logit}(y_{\text{gold}}) - \max_{y'\neq y_{\text{gold}}}\text{logit}(y'),
+\end{equation}
+and measure post-ablation change per layer as
+\begin{equation}
+\delta_{\ell} = \Delta^{\text{ablated }\ell}_{\text{margin}} - \Delta^{\text{base}}_{\text{margin}}.
+\end{equation}
+We compare a prespecified target layer (layer 3) against control layers with paired $t$-test and Wilcoxon signed-rank test.
+
+\subsection*{Implementation details}
+Key software versions are Python 3.12.8, openai 2.24.0, transformers 4.51.3, torch 2.7.1+cu126, scipy 1.17.1, and statsmodels 0.14.6. Hardware is 2$\times$ RTX 3090 (24GB). End-to-end runtime is approximately 8 minutes.
